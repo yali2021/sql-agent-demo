@@ -46,8 +46,8 @@ The application follows a simple pipeline:
 
 ## Limitations 
 
-Generated SQL may not always be accurate
-No validation layer
+- Generated SQL may not always be accurate
+- No validation layer
 
 ---
 
