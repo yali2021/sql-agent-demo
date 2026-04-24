@@ -162,14 +162,24 @@ Columns:
 - revenue
 """)
 st.markdown("**Try asking:**")
-st.write("- Show total revenue by product")
-st.write("- Which product generated the highest revenue?")
-st.write("- Show total quantity sold by category")
+q1 = "Show total revenue by product"
+q2 = "Which product generated the highest revenue?"
+q3 = "Show total quantity sold by category"
+
+if st.button(q1):
+    st.session_state["question"] = q1
+
+if st.button(q2):
+    st.session_state["question"] = q2
+
+if st.button(q3):
+    st.session_state["question"] = q3
 
 st.markdown("### Ask a question")
 
 question = st.text_input(
     "",
+    value=st.session_state.get("question", ""),
     placeholder="e.g. Which product generated the highest revenue?"
 )
 
