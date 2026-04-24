@@ -15,6 +15,12 @@ Given a business question, the system:
 
 ---
 
+## Demo
+
+https://sql-agent-demo.streamlit.app/
+
+---
+
 ## Example Questions
 
 - Show total revenue by product  
