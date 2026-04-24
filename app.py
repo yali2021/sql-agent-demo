@@ -161,7 +161,7 @@ Columns:
 - quantity
 - revenue
 """)
-st.markdown("**Try asking:**")
+st.markdown("**Click an example to get started:**")
 q1 = "Show total revenue by product"
 q2 = "Which product generated the highest revenue?"
 q3 = "Show total quantity sold by category"
