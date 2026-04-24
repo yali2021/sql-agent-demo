@@ -149,7 +149,7 @@ Write a short, clear business explanation in English.
 st.set_page_config(page_title="AI SQL Agent Demo", page_icon="📊")
 
 st.title("📊 AI SQL Agent Demo")
-st.write("Ask a question about sales data.")
+
 st.markdown("""
 **Dataset Overview**
 
