@@ -150,7 +150,17 @@ st.set_page_config(page_title="AI SQL Agent Demo", page_icon="📊")
 
 st.title("📊 AI SQL Agent Demo")
 st.write("Ask a question about sales data.")
+st.markdown("""
+**Dataset Overview**
 
+Table: sales
+
+Columns:
+- product_name
+- category
+- quantity
+- revenue
+""")
 st.markdown("### Example questions")
 st.write("- Show total revenue by product")
 st.write("- Which product generated the highest revenue?")
