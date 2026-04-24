@@ -161,12 +161,17 @@ Columns:
 - quantity
 - revenue
 """)
-st.markdown("### Example questions")
+st.markdown("**Try asking:**")
 st.write("- Show total revenue by product")
 st.write("- Which product generated the highest revenue?")
 st.write("- Show total quantity sold by category")
 
-question = st.text_input("Ask a question about sales data:")
+st.markdown("### Ask a question")
+
+question = st.text_input(
+    "",
+    placeholder="e.g. Which product generated the highest revenue?"
+)
 
 result_area = st.empty()
 
