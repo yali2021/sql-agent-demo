@@ -146,6 +146,10 @@ Write a short, clear business explanation in English.
     return explanation.strip()
 
 
+def master_agent(question: str) -> str:
+    return "sql"
+
+
 st.set_page_config(page_title="AI SQL Agent Demo", page_icon="📊")
 
 st.title("📊 AI SQL Agent Demo")
@@ -190,33 +194,42 @@ if question:
 
     with result_area.container():
         try:
-            with st.spinner("Generating SQL..."):
-                sql1 = generate_sql(question)
-
-            st.subheader("Initial SQL")
-            st.code(sql1, language="sql")
-
-            with st.spinner("Reviewing SQL..."):
-                sql2 = review_sql(question, sql1)
-
-            st.subheader("Reviewed SQL")
-            st.code(sql2, language="sql")
-
-            with st.spinner("Executing SQL..."):
-                rows = run_sql(sql2)
-
-            st.subheader("Query Results")
-            if rows:
-                for row in rows:
-                    st.text(" | ".join(str(item) for item in row))
+            st.write("Step 1: Master agent routing the question...")
+            intent = master_agent(question)
+            if intent != "sql":
+                st.info("Master agent did not route this to SQL.")
             else:
-                st.text("No rows returned.")
+                st.write("Step 2: Generating SQL")
+                with st.spinner("Generating SQL..."):
+                    sql1 = generate_sql(question)
 
-            with st.spinner("Generating explanation..."):
-                explanation = explain(question, sql2, rows)
+                st.subheader("Initial SQL")
+                st.code(sql1, language="sql")
 
-            st.subheader("Explanation")
-            st.write(explanation)
+                st.write("Step 3: Reviewing SQL")
+                with st.spinner("Reviewing SQL..."):
+                    sql2 = review_sql(question, sql1)
+
+                st.subheader("Reviewed SQL")
+                st.code(sql2, language="sql")
+
+                st.write("Step 4: Executing SQL")
+                with st.spinner("Executing SQL..."):
+                    rows = run_sql(sql2)
+
+                st.subheader("Query Results")
+                if rows:
+                    for row in rows:
+                        st.text(" | ".join(str(item) for item in row))
+                else:
+                    st.text("No rows returned.")
+
+                st.write("Step 5: Generating explanation")
+                with st.spinner("Generating explanation..."):
+                    explanation = explain(question, sql2, rows)
+
+                st.subheader("Explanation")
+                st.write(explanation)
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
