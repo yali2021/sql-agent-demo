@@ -52,8 +52,10 @@ The application follows a simple pipeline:
 
 ## Limitations 
 
-- Generated SQL may not always be accurate
-- No validation layer
+- Intent routing currently uses simple keyword-based logic
+- Generated SQL may still contain errors for complex or ambiguous questions
+- The application uses a small demo SQLite dataset
+- No user authentication or production-level security controls
 
 ---
 
