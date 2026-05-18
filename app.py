@@ -147,7 +147,24 @@ Write a short, clear business explanation in English.
 
 
 def master_agent(question: str) -> str:
+    q = question.lower()
+    schema_terms = (
+        "column", "columns", "field", "fields", "schema",
+        "dataset", "table structure",
+    )
+    if any(term in q for term in schema_terms):
+        return "schema"
     return "sql"
+
+
+SALES_COLUMNS = [
+    "id (INTEGER)",
+    "order_date (TEXT)",
+    "product_name (TEXT)",
+    "category (TEXT)",
+    "quantity (INTEGER)",
+    "revenue (REAL)",
+]
 
 
 st.set_page_config(page_title="AI SQL Agent Demo", page_icon="📊")
@@ -196,9 +213,13 @@ if question:
         try:
             st.write("Step 1: Master agent routing the question...")
             intent = master_agent(question)
-            if intent != "sql":
-                st.info("Master agent did not route this to SQL.")
-            else:
+            if intent == "schema":
+                st.subheader("Dataset schema")
+                st.markdown("**Table:** `sales`")
+                st.markdown("**Available columns:**")
+                for col in SALES_COLUMNS:
+                    st.write(f"- {col}")
+            elif intent == "sql":
                 st.write("Step 2: Generating SQL")
                 with st.spinner("Generating SQL..."):
                     sql1 = generate_sql(question)
