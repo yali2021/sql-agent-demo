@@ -1,7 +1,9 @@
+import os
+import sqlite3
+
+import pandas as pd
 import streamlit as st
 from openai import OpenAI
-import sqlite3
-import os
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -112,9 +114,37 @@ def run_sql(sql_query: str):
     try:
         cursor.execute(sql_query)
         rows = cursor.fetchall()
-        return rows
+        # Column names come from the SELECT clause (e.g. product_name, total_revenue)
+        columns = [col[0] for col in cursor.description] if cursor.description else []
+        return rows, columns
     finally:
         conn.close()
+
+
+def display_query_results(rows, columns):
+    """Turn SQL rows into a table and optionally a simple bar chart."""
+    if not rows:
+        st.text("No rows returned.")
+        return
+
+    # pandas DataFrame = spreadsheet-style table for st.dataframe()
+    if not columns:
+        columns = [f"column_{i}" for i in range(len(rows[0]))]
+    df = pd.DataFrame(rows, columns=columns)
+
+    st.dataframe(df, use_container_width=True)
+
+    # Bar chart: need at least one label column (text) and one number column
+    text_cols = df.select_dtypes(include=["object", "string"]).columns.tolist()
+    num_cols = df.select_dtypes(include="number").columns.tolist()
+
+    if text_cols and num_cols:
+        category_col = text_cols[0]   # e.g. product_name or category
+        value_col = num_cols[0]       # e.g. total_revenue or quantity
+        st.subheader("Chart")
+        # Streamlit bar chart: category names on the x-axis, numeric values as bar height
+        chart_data = df.set_index(category_col)[value_col]
+        st.bar_chart(chart_data)
 
 
 def explain(question: str, sql_query: str, rows) -> str:
@@ -236,14 +266,10 @@ if question:
 
                 st.write("Step 4: Executing SQL")
                 with st.spinner("Executing SQL..."):
-                    rows = run_sql(sql2)
+                    rows, columns = run_sql(sql2)
 
                 st.subheader("Query Results")
-                if rows:
-                    for row in rows:
-                        st.text(" | ".join(str(item) for item in row))
-                else:
-                    st.text("No rows returned.")
+                display_query_results(rows, columns)
 
                 st.write("Step 5: Generating explanation")
                 with st.spinner("Generating explanation..."):
